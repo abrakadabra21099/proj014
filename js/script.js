@@ -145,12 +145,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // classes
 
     class DayMenuItem{
-        constructor(name, img, subtitle, descr, cost) {
+        constructor(name, img, subtitle, descr, cost, ...classes) {
             this.name = name;
             this.img = img;
             this.subtitle = subtitle;
             this.descr = descr;
             this.cost = cost;
+
+            this.classes = classes;
+
             // this.container = document.querySelector('.menu').querySelector('.container');
             this.container = document.querySelector('.menu .container');
             this.transfer = 27;
@@ -165,16 +168,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         show() {
             const elem = document.createElement('div');
+            console.log(this.classes);
+
+            // if (this.classes.length === 0) {
+            //     this.elem = 'menu__item';
+            //     elem.classList.add(this.elem);
+                elem.classList.add('menu__item');
+            // } else {
+                this.classes.forEach(className => elem.classList.add(className));
+            // }
             elem.innerHTML = `
-                <div class="menu__item">
-                    <img src="${this.img}" alt="${this.name}">
-                    <h3 class="menu__item-subtitle">${this.subtitle}</h3>
-                    <div class="menu__item-descr">${this.descr}</div>
-                    <div class="menu__item-divider"></div>
-                    <div class="menu__item-price">
-                        <div class="menu__item-cost">Цена:</div>
-                        <div class="menu__item-total"><span>${this.cost}</span> грн/день</div>
-                    </div>
+                <img src="${this.img}" alt="${this.name}">
+                <h3 class="menu__item-subtitle">${this.subtitle}</h3>
+                <div class="menu__item-descr">${this.descr}</div>
+                <div class="menu__item-divider"></div>
+                <div class="menu__item-price">
+                    <div class="menu__item-cost">Цена:</div>
+                    <div class="menu__item-total"><span>${this.cost}</span> грн/день</div>
                 </div>`;
             this.container.appendChild(elem);
         }
@@ -188,17 +198,31 @@ document.addEventListener('DOMContentLoaded', () => {
             'img/tabs/vegy.jpg', 
             'Меню "Фитнес"', 
             'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!', 
-            9).clear();
+            9,              
+            'big').clear();
     new DayMenuItem(
               'elite', 
               'img/tabs/elite.jpg', 
               'Меню “Премиум”', 
               'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!', 
-              14).show();
+              14, 
+              ).show();
     new DayMenuItem(
               'post', 
               'img/tabs/post.jpg', 
               'Меню "Постное"', 
               'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.', 
-              21).show();
+              21, 
+              ).show();
+    // const log = function(a, b, ...cdef) {
+    //     console.log(a, b, cdef);
+    // };
+    // log('basic', 'rest', 'operator', 'usage');
+
+    // function calcOrDouble(number, basis = 2) {
+    //     // basis = basis || 2;
+    //     console.log(number * basis);
+    // };
+    // calcOrDouble(3);
+
 });
