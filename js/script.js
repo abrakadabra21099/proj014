@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     // ModalTimer
-    const modalTimerId = setTimeout(showModal, 5000)
+    const modalTimerId = setTimeout(showModal, 15000)
 
     function showModalByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
@@ -142,4 +142,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.addEventListener('scroll', showModalByScroll);
+    // classes
+
+    class DayMenuItem{
+        constructor(name, img, subtitle, descr, cost) {
+            this.name = name;
+            this.img = img;
+            this.subtitle = subtitle;
+            this.descr = descr;
+            this.cost = cost;
+            // this.container = document.querySelector('.menu').querySelector('.container');
+            this.container = document.querySelector('.menu .container');
+            this.transfer = 27;
+            this.changeToUAH();
+        }
+        clear() {
+            // console.log(this.container);
+            this.container.querySelectorAll('.menu__item').forEach(function(e) {
+                 e.remove();
+            });
+            this.show();
+        }
+        show() {
+            const elem = document.createElement('div');
+            elem.innerHTML = `
+                <div class="menu__item">
+                    <img src="${this.img}" alt="${this.name}">
+                    <h3 class="menu__item-subtitle">${this.subtitle}</h3>
+                    <div class="menu__item-descr">${this.descr}</div>
+                    <div class="menu__item-divider"></div>
+                    <div class="menu__item-price">
+                        <div class="menu__item-cost">Цена:</div>
+                        <div class="menu__item-total"><span>${this.cost}</span> грн/день</div>
+                    </div>
+                </div>`;
+            this.container.appendChild(elem);
+        }
+        changeToUAH() {
+            this.cost *= this.transfer;
+        }
+    }
+
+    new DayMenuItem(
+            'vegy', 
+            'img/tabs/vegy.jpg', 
+            'Меню "Фитнес"', 
+            'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!', 
+            9).clear();
+    new DayMenuItem(
+              'elite', 
+              'img/tabs/elite.jpg', 
+              'Меню “Премиум”', 
+              'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!', 
+              14).show();
+    new DayMenuItem(
+              'post', 
+              'img/tabs/post.jpg', 
+              'Меню "Постное"', 
+              'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.', 
+              21).show();
 });
