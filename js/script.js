@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Timer
 
-    const deadLine = '2021-04-14';
+    const deadLine = '2022-04-14';
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),
             days = Math.floor(t / (1000 * 60 * 60 * 24)),
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         show() {
             const elem = document.createElement('div');
-            console.log(this.classes);
+            // console.log(this.classes);
 
             // if (this.classes.length === 0) {
             //     this.elem = 'menu__item';
@@ -224,5 +224,61 @@ document.addEventListener('DOMContentLoaded', () => {
     //     console.log(number * basis);
     // };
     // calcOrDouble(3);
+
+    // Forms
+
+    const forms = document.querySelectorAll('form');
+
+    const message = {
+        loading: 'Загрузка...',
+        success: 'Спасибо! Вам скоро перезвонит наш менеджер для уточнения и подтверждения.',
+        failure: 'Что то пошло не так...'
+    };
+
+    forms.forEach(form => {
+        postData(form);
+    });
+
+    function postData(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const statusMessage = document.createElement('div');
+            statusMessage.classList.add('status');
+            statusMessage.textContent = message.loading;
+            form.append( statusMessage );
+
+            const r = new XMLHttpRequest();
+            r.open('POST', 'server.php');
+
+            // r.setRequestHeader('Content-type', 'multipart/form-data');
+            r.setRequestHeader('Content-type', 'application/json');
+
+            const formData = new FormData(form);
+
+            const obj = {};
+            formData.forEach(function(value, key) {
+                obj[key] = value;
+            });
+
+            const json = JSON.stringify(obj);
+
+            // r.send(formData);
+            r.send(json);
+
+            r.addEventListener('load', () => {
+                if (r.status === 200) {
+                    console.log(r.response);
+                    statusMessage.textContent = message.success;
+                    form.reset();
+                    setTimeout(() => {
+                        statusMessage.remove();
+                    },2000);
+                } else {
+                    statusMessage.textContent = message.failure;
+                }
+            });
+        });
+    }
 
 });
