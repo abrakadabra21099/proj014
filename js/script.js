@@ -255,11 +255,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // form.append( statusMessage );
             form.insertAdjacentElement('afterend', statusMessage);
 
-            const r = new XMLHttpRequest();
-            r.open('POST', 'server.php');
+            // const r = new XMLHttpRequest();
+            // r.open('POST', 'server.php');
+
 
             // r.setRequestHeader('Content-type', 'multipart/form-data');
-            r.setRequestHeader('Content-type', 'application/json');
+            // r.setRequestHeader('Content-type', 'application/json');
 
             const formData = new FormData(form);
 
@@ -268,23 +269,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 obj[key] = value;
             });
 
-            const json = JSON.stringify(obj);
+            // const json = JSON.stringify(obj);
+
+            fetch('server.php', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(obj)
+            }).then(data => data.text()
+            ).then(data => {
+                console.log(data);
+                showThanksModal(message.success);
+                statusMessage.remove();
+            }).catch(() => {
+                showThanksModal(message.failure);
+            }).finally(() => {
+                form.reset();
+            });
 
             // r.send(formData);
-            r.send(json);
+            // r.send(json);
 
-            r.addEventListener('load', () => {
-                if (r.status === 200) {
-                    console.log(r.response);
-                    showThanksModal(message.success);
-                    form.reset();
-                    // setTimeout(() => {
-                        statusMessage.remove();
-                    // },2000);
-                } else {
-                    showThanksModal(message.failure);
-                }
-            });
+            // r.addEventListener('load', () => {
+            //     if (r.status === 200) {
+            //         console.log(r.response);
+            //         showThanksModal(message.success);
+            //         form.reset();
+            //         // setTimeout(() => {
+            //             statusMessage.remove();
+            //         // },2000);
+            //     } else {
+            //         showThanksModal(message.failure);
+            //     }
+            // });
         });
     }
     // Thanks modal
@@ -313,5 +331,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 4000)
     }
 
+    // fetch('https://jsonplaceholder.typicode.com/posts', {
+    //     method: 'POST',
+    //     body: JSON.stringify({name: 'Alex'}),
+    //     headers: {
+    //         'Content-type': 'applications/json'
+    //     }
+    // })
+    // .then(response => response.json())
+    // .then(json => console.log(json));
 
 });
