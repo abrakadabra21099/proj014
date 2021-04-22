@@ -193,28 +193,46 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    new DayMenuItem(
-            'vegy', 
-            'img/tabs/vegy.jpg', 
-            'Меню "Фитнес"', 
-            'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!', 
-            9,              
-            'big').clear();
-    new DayMenuItem(
-              'elite', 
-              'img/tabs/elite.jpg', 
-              'Меню “Премиум”', 
-              'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!', 
-              14, 
-              ).show();
-    new DayMenuItem(
-              'post', 
-              'img/tabs/post.jpg', 
-              'Меню "Постное"', 
-              'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.', 
-              21, 
-              ).show();
-    // const log = function(a, b, ...cdef) {
+    const getResource = async (url) => {
+        const res = await fetch(url);
+
+        if (!res.ok) { 
+            throw new Error(`${url}: ${res.status}: ${res.statusText}`);
+        }
+
+        return await res.json();
+    };
+
+    getResource('http://localhost:3000/menu')
+        .then(data => {
+            data.forEach(({altimg, img, title, descr, price}) => {
+                new DayMenuItem(altimg, img, title, descr, price).show();
+            });
+        });
+
+    // new DayMenuItem(
+    //         'vegy', 
+    //         'img/tabs/vegy.jpg', 
+    //         'Меню "Фитнес"', 
+    //         'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!', 
+    //         9,              
+    //         'big').clear();
+    // new DayMenuItem(
+    //           'elite', 
+    //           'img/tabs/elite.jpg', 
+    //           'Меню “Премиум”', 
+    //           'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!', 
+    //           14, 
+    //           ).show();
+    // new DayMenuItem(
+    //           'post', 
+    //           'img/tabs/post.jpg', 
+    //           'Меню "Постное"', 
+    //           'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.', 
+    //           21, 
+    //           ).show();
+
+              // const log = function(a, b, ...cdef) {
     //     console.log(a, b, cdef);
     // };
     // log('basic', 'rest', 'operator', 'usage');
@@ -236,10 +254,22 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     forms.forEach(form => {
-        postData(form);
+        bindPostData(form);
     });
 
-    function postData(form) {
+    const postData = async (url, data) => {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: data
+        });
+
+        return await res.json();
+    };
+
+    function bindPostData(form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -264,21 +294,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const formData = new FormData(form);
 
-            const obj = {};
-            formData.forEach(function(value, key) {
-                obj[key] = value;
-            });
+            // const obj = {};
+            // formData.forEach(function(value, key) {
+            //     obj[key] = value;
+            // });
+
+            const json = JSON.stringify(Object.fromEntries( formData.entries() ));
 
             // const json = JSON.stringify(obj);
 
-            fetch('server.php', {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify(obj)
-            }).then(data => data.text()
-            ).then(data => {
+            // fetch('server.php', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-type': 'application/json'
+            //     },
+            //     body: JSON.stringify(obj)
+            // })
+
+            // postData('http://localhost:3000/requests', JSON.stringify(obj))
+            postData('http://localhost:3000/requests', json)
+            .then(data => {
                 console.log(data);
                 showThanksModal(message.success);
                 statusMessage.remove();
@@ -341,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // .then(response => response.json())
     // .then(json => console.log(json));
 
-    fetch('http://localhost:3000/menu')
+    fetch('http://localhost:3000/requests')
         .then(data => data.json())
         .then(res => console.log(res));
 
