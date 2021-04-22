@@ -203,9 +203,17 @@ document.addEventListener('DOMContentLoaded', () => {
         return await res.json();
     };
 
-    getResource('http://localhost:3000/menu')
+
+    // getResource('http://localhost:3000/menu')
+    //     .then(data => {
+    //         data.forEach(({altimg, img, title, descr, price}) => {
+    //             new DayMenuItem(altimg, img, title, descr, price).show();
+    //         });
+    //     });
+
+    axios.get('http://localhost:3000/menu')
         .then(data => {
-            data.forEach(({altimg, img, title, descr, price}) => {
+            data.data.forEach(({altimg, img, title, descr, price}) => {
                 new DayMenuItem(altimg, img, title, descr, price).show();
             });
         });
