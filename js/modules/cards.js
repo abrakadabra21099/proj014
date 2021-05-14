@@ -53,7 +53,7 @@ function cards() {
 
     getResource('http://localhost:3000/menu')
     .then(data => {
-        data.data.forEach(({altimg, img, title, descr, price}) => {
+        data.forEach(({altimg, img, title, descr, price}) => {
             new DayMenuItem(altimg, img, title, descr, price).show();
         });
     });
