@@ -1,4 +1,7 @@
 // 'use strict';
+require('es6-promise').polyfill();
+import 'nodelist-foreach-polyfill';
+
 import cards  from './modules/cards';
 import tabs   from './modules/tabs';
 import modal  from './modules/modal';
@@ -7,6 +10,7 @@ import calc   from './modules/calc';
 import forms  from './modules/forms';
 import slider from './modules/slider';
 import {showModal} from './modules/modal';
+
 
 document.addEventListener('DOMContentLoaded', () => {
     // const cards = require('./modules/cards'),
